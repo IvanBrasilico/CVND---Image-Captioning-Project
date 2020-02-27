@@ -4,3 +4,9 @@ data/
 __pycache__/
 annotations/
 .DS_Store
+*.pkl
+cocoapi/*
+.ipynb_checkpoints/*
+icp-venv/*
+.idea
+/cocoapi/
