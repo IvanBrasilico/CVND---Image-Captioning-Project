@@ -28,8 +28,13 @@ class DecoderRNN(nn.Module):
         self.lstm = nn.LSTM(embed_size, hidden_size, 
                             num_layers=num_layers, batch_first=True)
         self.linear = nn.Linear(hidden_size, vocab_size)
-        self.hidden = None
-    
+        #initialize weights
+        self.init_weights()
+        
+        
+    def init_weights(self):
+        torch.nn.init.xavier_uniform_(self.linear.weight)
+        torch.nn.init.xavier_uniform_(self.embed.weight)    
     
     def forward(self, features, captions):
         """Decode image feature vectors and generates captions."""
@@ -48,7 +53,7 @@ class DecoderRNN(nn.Module):
         batch_size = inputs.shape[0]
         print("Batch_size  " , batch_size)
         for i in range(max_len):
-            lstm_states, _ = self.lstm(inputs) 
+            lstm_states, states = self.lstm(inputs, states) 
             outputs = self.linear(lstm_states.squeeze(1)) 
             predicted = outputs.max(1)[1]
             sampled_ids.append(predicted.cpu().numpy()[0].item())
